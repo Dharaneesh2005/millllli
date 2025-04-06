@@ -1,0 +1,32 @@
+# Vercel Deployment Guide for Millikit E-Commerce
+
+## Updated Deployment Instructions
+
+1. **Important**: Set the Root Directory to `client` in your Vercel project settings
+
+2. Required Environment Variables:
+   - DATABASE_URL: Your PostgreSQL connection string
+   - PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE (as alternative to DATABASE_URL)
+   - ADMIN_KEY: Your admin access key
+   - SESSION_SECRET: Session encryption key
+
+3. Deployment Options:
+   - Deploy from GitHub: Set Root Directory to `client`
+   - Deploy using CLI: `vercel --cwd ./client`
+
+## Troubleshooting Common Errors
+
+If you see: "Specified 'src' for '@vercel/next' has to be 'package.json' or 'next.config.js'"
+- Confirm you're using the client directory as the root
+- Do not use the root vercel.json that points to client/pages/
+- Let Vercel detect your Next.js setup automatically
+
+## Database Connection
+
+- For Neon databases: Enable "Pooled Connection" option
+- Verify your database accepts connections from Vercel IP ranges
+- Use the health endpoint `/api/health` to verify connection
+
+## Additional Help
+
+For more assistance, check the full documentation or contact support.

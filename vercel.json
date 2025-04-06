@@ -1,0 +1,41 @@
+{
+  "buildCommand": "node vercel-build.js",
+  "outputDirectory": "dist",
+  "framework": "nextjs",
+  "rewrites": [
+    { 
+      "source": "/api/:path*", 
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/api/debug/database",
+      "destination": "/api/debug/database"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

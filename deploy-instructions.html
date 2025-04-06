@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel Deployment Instructions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .solution {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vercel Deployment Instructions for Millikit E-Commerce</h1>
+    
+    <div class="warning">
+        <h3>Common Error</h3>
+        <p><strong>Error Message:</strong> Specified "src" for "@vercel/next" has to be "package.json" or "next.config.js"</p>
+    </div>
+    
+    <div class="solution">
+        <h3>Solution Options</h3>
+        
+        <h4>Option 1: Deploy from the client directory (RECOMMENDED)</h4>
+        <p>Use this approach to fix the TypeScript build errors by using our serverless-compatible files:</p>
+        <ol>
+            <li>In your project settings, set <strong>Root Directory</strong> to <code>client</code></li>
+            <li>Make sure the <code>outputDirectory</code> in vercel.json is set to <code>dist</code></li>
+            <li>Make sure all database environment variables are configured in Vercel</li>
+        </ol>
+        
+        <p><em>Using Vercel CLI:</em></p>
+        <pre>cd client
+vercel</pre>
+        
+        <p>This approach now resolves the TypeScript build errors by:</p>
+        <ul>
+            <li>Using JavaScript versions of problematic TypeScript files</li>
+            <li>Configuring a custom build process that avoids type errors</li>
+            <li>Setting the output directory to <code>dist</code> as specified in vercel.json</li>
+        </ul>
+        
+        <h4>Option 2: Deploy from the root directory</h4>
+        <p>If you prefer to deploy from the root directory:</p>
+        <ol>
+            <li>Replace your <code>vercel.json</code> with the contents from <code>vercel-root-deploy.json</code></li>
+            <li>This specialized configuration tells Vercel to use the Next.js builder for the client directory</li>
+        </ol>
+        
+        <p><em>Using Vercel CLI:</em></p>
+        <pre>cp vercel-root-deploy.json vercel.json
+vercel</pre>
+    </div>
+    
+    <h2>Required Environment Variables</h2>
+    <ul>
+        <li><code>DATABASE_URL</code>: Your PostgreSQL connection string</li>
+        <li>Or individual database parameters:
+            <ul>
+                <li><code>PGHOST</code>: PostgreSQL host address</li>
+                <li><code>PGPORT</code>: PostgreSQL port (usually 5432)</li>
+                <li><code>PGUSER</code>: PostgreSQL username</li>
+                <li><code>PGPASSWORD</code>: PostgreSQL password</li>
+                <li><code>PGDATABASE</code>: PostgreSQL database name</li>
+            </ul>
+        </li>
+        <li><code>ADMIN_KEY</code>: A secure key for admin access</li>
+        <li><code>SESSION_SECRET</code>: A secure string for session encryption</li>
+    </ul>
+    
+    <h2>Verification</h2>
+    <p>After deployment:</p>
+    <ol>
+        <li>Visit your deployed site at the URL provided by Vercel</li>
+        <li>Check the health endpoint at <code>/api/health</code></li>
+        <li>To verify database connectivity, check <code>/api/debug/database</code> which will show:</li>
+        <ul>
+            <li>Whether the database connection is established</li>
+            <li>Which PostgreSQL environment variables are correctly configured</li>
+            <li>The masked database connection string (with password hidden)</li>
+            <li>Whether you're running in the serverless or standard environment</li>
+        </ul>
+        <li>Test specific API endpoints like <code>/api/products/featured</code> to verify full functionality</li>
+    </ol>
+    
+    <script>
+        // Simple script to check if viewing from Vercel
+        if (window.location.hostname.includes('vercel.app')) {
+            document.body.innerHTML += '<div class="warning"><p>Note: If you are seeing this page after deployment, it means you did not set the Root Directory to <code>client</code>. Please update your deployment settings.</p></div>';
+        }
+    </script>
+</body>
+</html>

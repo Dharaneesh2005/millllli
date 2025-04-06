@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Millikit</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 100px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select class="bg-white border rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            <option value="en">English</option>
+            <option value="ta">தமிழ்</option>
+        </select>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <img src="https://raw.githubusercontent.com/millikit/assets/main/logo.png" alt="Millikit Logo" class="h-10">
+                    <span class="text-2xl font-bold text-yellow-500">
+                        <span class="text-green-700">Milli</span>kit
+                    </span>
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-green-600 transition-colors">Home</a>
+                    <a href="products.html" class="text-gray-700 hover:text-green-600 transition-colors">Products</a>
+                    <a href="about.html" class="text-gray-700 hover:text-green-600 transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="relative text-green-600">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="cart-count absolute -top-2 -right-2 bg-yellow-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Cart Header -->
+    <section class="pt-24 pb-12 bg-gradient-to-r from-green-700 to-green-600">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-bold text-white mb-4">Shopping Cart</h1>
+            <div class="flex items-center space-x-2 text-green-100">
+                <a href="index.html" class="hover:text-white transition-colors">Home</a>
+                <span>/</span>
+                <span class="text-white">Cart</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <!-- Empty Cart Message -->
+            <div id="emptyCart" class="hidden text-center py-12">
+                <div class="text-gray-400 mb-4">
+                    <i class="fas fa-shopping-cart text-6xl"></i>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">Your cart is empty</h2>
+                <p class="text-gray-600 mb-8">Add some products to your cart and start shopping!</p>
+                <a href="products.html" class="bg-green-700 text-white px-8 py-3 rounded-full hover:bg-green-600 transition-colors">
+                    Browse Products
+                </a>
+            </div>
+
+            <!-- Cart Items -->
+            <div id="cartItems" class="hidden">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6">
+                        <!-- Cart Items List -->
+                        <div id="cartItemsList" class="space-y-6"></div>
+
+                        <!-- Cart Summary -->
+                        <div class="mt-8 flex justify-between items-center border-t pt-6">
+                            <div>
+                                <p class="text-gray-600">Total Items: <span id="totalItems">0</span></p>
+                                <p class="text-2xl font-bold text-green-600 mt-1">Total: ₹<span id="totalAmount">0</span></p>
+                            </div>
+                            <div class="space-x-4">
+                                <button onclick="clearCart()" class="text-red-500 hover:text-red-600">
+                                    Clear Cart
+                                </button>
+                                <a href="checkout.html" class="bg-green-700 text-white px-8 py-3 rounded-full hover:bg-green-600 transition-colors">
+                                    Proceed to Checkout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Millikit</h3>
+                    <p class="text-gray-300">Premium quality millets for your healthy lifestyle.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="products.html" class="text-gray-300 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@millikit.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 234 567 890</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-green-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2024 Millikit. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Get cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartDisplay();
+            updateCartCount();
+        });
+
+        // Update cart display
+        function updateCartDisplay() {
+            const emptyCart = document.getElementById('emptyCart');
+            const cartItems = document.getElementById('cartItems');
+            const cartItemsList = document.getElementById('cartItemsList');
+            const totalItemsSpan = document.getElementById('totalItems');
+            const totalAmountSpan = document.getElementById('totalAmount');
+
+            if (cart.length === 0) {
+                emptyCart.classList.remove('hidden');
+                cartItems.classList.add('hidden');
+                return;
+            }
+
+            emptyCart.classList.add('hidden');
+            cartItems.classList.remove('hidden');
+
+            let totalAmount = 0;
+            let totalItems = 0;
+
+            cartItemsList.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                totalAmount += itemTotal;
+                totalItems += item.quantity;
+
+                return `
+                    <div class="flex items-center justify-between ${index < cart.length - 1 ? 'border-b pb-6' : ''}">
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-cover rounded-lg">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800">${item.name}</h3>
+                                <p class="text-gray-600">₹${item.price}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="text-gray-500 hover:text-green-600">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="text-gray-700 w-8 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="text-gray-500 hover:text-green-600">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <span class="text-lg font-semibold text-green-600 w-24 text-right">₹${itemTotal}</span>
+                            <button onclick="removeItem(${item.id})" class="text-red-500 hover:text-red-600">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalItemsSpan.textContent = totalItems;
+            totalAmountSpan.textContent = totalAmount.toFixed(2);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.querySelector('.cart-count');
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+
+        // Update quantity
+        function updateQuantity(productId, change) {
+            const itemIndex = cart.findIndex(item => item.id === productId);
+            if (itemIndex !== -1) {
+                cart[itemIndex].quantity = Math.max(0, cart[itemIndex].quantity + change);
+                if (cart[itemIndex].quantity === 0) {
+                    cart.splice(itemIndex, 1);
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+                updateCartCount();
+            }
+        }
+
+        // Remove item
+        function removeItem(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+            updateCartCount();
+        }
+
+        // Clear cart
+        function clearCart() {
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+                updateCartCount();
+            }
+        }
+    </script>
+</body>
+</html>

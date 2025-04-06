@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Millikit</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-image {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 100px;
+            z-index: 1000;
+        }
+
+        .list-view .product-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .list-view .product-image {
+            width: 200px;
+            height: 200px;
+            flex-shrink: 0;
+        }
+
+        .list-view .product-details {
+            flex: 1;
+            padding: 1rem 2rem;
+        }
+
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select class="bg-white border rounded-full px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="ta">தமிழ்</option>
+        </select>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <img src="https://raw.githubusercontent.com/millikit/assets/main/logo.png" alt="Millikit Logo" class="h-10">
+                    <span class="text-2xl font-bold text-yellow-500">
+                        <span class="text-green-700">Milli</span>kit
+                    </span>
+                </a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-green-600 transition-colors">Home</a>
+                    <a href="#" class="text-green-600">Products</a>
+                    <a href="about.html" class="text-gray-700 hover:text-green-600 transition-colors">About</a>
+                    <a href="contact.html" class="text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="relative text-gray-700 hover:text-green-600 transition-colors">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="cart-count absolute -top-2 -right-2 bg-yellow-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                    </a>
+                    <button class="md:hidden text-gray-700" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden py-4">
+                <a href="index.html" class="block py-2 text-gray-700 hover:text-green-600 transition-colors">Home</a>
+                <a href="#" class="block py-2 text-green-600">Products</a>
+                <a href="about.html" class="block py-2 text-gray-700 hover:text-green-600 transition-colors">About</a>
+                <a href="contact.html" class="block py-2 text-gray-700 hover:text-green-600 transition-colors">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Products Header -->
+    <section class="pt-24 pb-12 bg-gradient-to-r from-green-700 to-green-600">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-bold text-white mb-4" data-translate="Our Products">Our Products</h1>
+            <p class="text-green-100 text-lg" data-translate="Discover our range">Discover our range of premium quality millets</p>
+            
+            <!-- Breadcrumb -->
+            <div class="flex items-center space-x-2 mt-4 text-green-100">
+                <a href="index.html" class="hover:text-white transition-colors" data-translate="Home">Home</a>
+                <span>/</span>
+                <span class="text-white" data-translate="Products">Products</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 bg-white border-b">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-700" data-translate="Filter by">Filter by:</span>
+                        <select id="categoryFilter" class="border rounded-full px-4 py-2 text-gray-700 focus:outline-none focus:border-green-500 cursor-pointer">
+                            <option value="all" data-translate="All Categories">All Categories</option>
+                            <option value="organic" data-translate="Organic Millets">Organic Millets</option>
+                            <option value="mixed" data-translate="Mixed Blends">Mixed Blends</option>
+                            <option value="specialty" data-translate="Specialty Items">Specialty Items</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-700" data-translate="Sort by">Sort by:</span>
+                        <select id="sortBy" class="border rounded-full px-4 py-2 text-gray-700 focus:outline-none focus:border-green-500 cursor-pointer">
+                            <option value="featured" data-translate="Featured">Featured</option>
+                            <option value="price-asc" data-translate="Price: Low to High">Price: Low to High</option>
+                            <option value="price-desc" data-translate="Price: High to Low">Price: High to Low</option>
+                            <option value="name-asc" data-translate="Name: A to Z">Name: A to Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-700" data-translate="View">View:</span>
+                    <button id="gridViewBtn" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" onclick="setView('grid')">
+                        <i class="fas fa-th-large text-lg"></i>
+                    </button>
+                    <button id="listViewBtn" class="p-2 text-gray-400 hover:bg-green-50 rounded-lg transition-colors" onclick="setView('list')">
+                        <i class="fas fa-list text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-12">
+        <div class="container mx-auto px-6">
+            <div id="productsContainer" class="grid-view">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+
+            <!-- Results Count -->
+            <div class="mt-8 text-center text-gray-600">
+                Showing <span id="startCount">1</span>-<span id="endCount">6</span> of <span id="totalCount">8</span> products
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2" id="pagination">
+                    <!-- Pagination will be dynamically inserted here -->
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-green-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Millikit</h3>
+                    <p class="text-gray-300">Premium quality millets for your healthy lifestyle.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+                        <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@millikit.com</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 234 567 890</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Chennai, Tamil Nadu, India</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-yellow-400 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-green-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2024 Millikit. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Product data
+        const products = [
+            {
+                id: 1,
+                name: "Foxtail Millet",
+                description: "Premium quality organic foxtail millet",
+                price: 299,
+                image: "https://images.pexels.com/photos/7511774/pexels-photo-7511774.jpeg",
+                category: "organic",
+                badge: "Organic",
+                featured: true
+            },
+            {
+                id: 2,
+                name: "Pearl Millet",
+                description: "Organic pearl millet",
+                price: 249,
+                image: "https://images.pexels.com/photos/7511729/pexels-photo-7511729.jpeg",
+                category: "organic",
+                badge: "Best Seller",
+                featured: true
+            },
+            {
+                id: 3,
+                name: "Finger Millet",
+                description: "Fresh finger millet",
+                price: 199,
+                image: "https://images.pexels.com/photos/7511761/pexels-photo-7511761.jpeg",
+                category: "organic",
+                badge: "Organic",
+                featured: false
+            },
+            {
+                id: 4,
+                name: "Mixed Millets",
+                description: "Nutritious blend of various organic millets",
+                price: 349,
+                image: "https://images.pexels.com/photos/7511753/pexels-photo-7511753.jpeg",
+                category: "mixed",
+                badge: "New",
+                featured: true
+            },
+            {
+                id: 5,
+                name: "Barnyard Millet",
+                description: "Traditional barnyard millet",
+                price: 279,
+                image: "https://images.pexels.com/photos/7511774/pexels-photo-7511774.jpeg",
+                category: "organic",
+                badge: "Organic",
+                featured: false
+            },
+            {
+                id: 6,
+                name: "Kodo Millet",
+                description: "Premium kodo millet",
+                price: 259,
+                image: "https://images.pexels.com/photos/7511729/pexels-photo-7511729.jpeg",
+                category: "organic",
+                badge: "Popular",
+                featured: true
+            },
+            {
+                id: 7,
+                name: "Little Millet",
+                description: "Organic little millet",
+                price: 229,
+                image: "https://images.pexels.com/photos/7511761/pexels-photo-7511761.jpeg",
+                category: "organic",
+                badge: "Organic",
+                featured: false
+            },
+            {
+                id: 8,
+                name: "Millet Flour Blend",
+                description: "Special millet flour blend",
+                price: 399,
+                image: "https://images.pexels.com/photos/7511753/pexels-photo-7511753.jpeg",
+                category: "specialty",
+                badge: "Special",
+                featured: true
+            }
+        ];
+
+        // State management
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        let currentView = 'grid';
+        let filteredProducts = [...products];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProductDisplay();
+            updateCartCount();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+            document.getElementById('sortBy').addEventListener('change', sortProducts);
+            updateCartCount();
+        }
+
+        // Filter products
+        function filterProducts() {
+            const category = document.getElementById('categoryFilter').value;
+            filteredProducts = category === 'all' 
+                ? [...products]
+                : products.filter(p => p.category === category);
+            currentPage = 1;
+            sortProducts(); // Apply current sort after filtering
+        }
+
+        // Sort products
+        function sortProducts() {
+            const sortType = document.getElementById('sortBy').value;
+            const productsToSort = [...filteredProducts]; // Create a copy to sort
+
+            switch(sortType) {
+                case 'featured':
+                    productsToSort.sort((a, b) => {
+                        if (a.featured === b.featured) return 0;
+                        return a.featured ? -1 : 1;
+                    });
+                    break;
+                case 'price-asc':
+                    productsToSort.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    productsToSort.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name-asc':
+                    productsToSort.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+
+            filteredProducts = productsToSort;
+            updateProductDisplay();
+        }
+
+        // Toggle view
+        function setView(view) {
+            currentView = view;
+            const container = document.getElementById('productsContainer');
+            const gridBtn = document.getElementById('gridViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+
+            if (view === 'grid') {
+                container.className = 'grid-view';
+                gridBtn.classList.add('text-green-600');
+                gridBtn.classList.remove('text-gray-400');
+                listBtn.classList.add('text-gray-400');
+                listBtn.classList.remove('text-green-600');
+            } else {
+                container.className = 'list-view';
+                listBtn.classList.add('text-green-600');
+                listBtn.classList.remove('text-gray-400');
+                gridBtn.classList.add('text-gray-400');
+                gridBtn.classList.remove('text-green-600');
+            }
+            updateProductDisplay();
+        }
+
+        // Update product display
+        function updateProductDisplay() {
+            const container = document.getElementById('productsContainer');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, filteredProducts.length);
+            const paginatedProducts = filteredProducts.slice(start, end);
+            
+            // Update results count
+            document.getElementById('startCount').textContent = filteredProducts.length > 0 ? start + 1 : 0;
+            document.getElementById('endCount').textContent = end;
+            document.getElementById('totalCount').textContent = filteredProducts.length;
+            
+            container.innerHTML = paginatedProducts.map(product => 
+                currentView === 'grid' ? createGridCard(product) : createListCard(product)
+            ).join('');
+            
+            updatePagination();
+        }
+
+        // Create grid card
+        function createGridCard(product) {
+            return `
+                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="relative overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover product-image">
+                        <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-sm">
+                            ${product.badge}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 mb-4">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-green-600">₹${product.price}</span>
+                            <button onclick="addToCart(${product.id})" 
+                                    class="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors transform hover:scale-105 duration-300">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create list card
+        function createListCard(product) {
+            return `
+                <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+                    <div class="flex">
+                        <div class="relative w-64 h-64 flex-shrink-0">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover product-image">
+                            <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-sm">
+                                ${product.badge}
+                            </div>
+                        </div>
+                        <div class="flex-1 p-6 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">${product.name}</h3>
+                                <p class="text-gray-600">${product.description}</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-2xl font-bold text-green-600">₹${product.price}</span>
+                                <button onclick="addToCart(${product.id})" 
+                                        class="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors transform hover:scale-105 duration-300">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = `
+                <button class="pagination-btn px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-600'}" 
+                        onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Show ellipsis for many pages
+            const maxButtons = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+            
+            if (endPage - startPage + 1 < maxButtons) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+            
+            if (startPage > 1) {
+                paginationHTML += `
+                    <button class="pagination-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                            onclick="changePage(1)">1</button>
+                    ${startPage > 2 ? '<span class="px-2">...</span>' : ''}
+                `;
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button class="pagination-btn px-4 py-2 rounded-lg ${currentPage === i ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-600'}"
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            if (endPage < totalPages) {
+                paginationHTML += `
+                    ${endPage < totalPages - 1 ? '<span class="px-2">...</span>' : ''}
+                    <button class="pagination-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                            onclick="changePage(${totalPages})">${totalPages}</button>
+                `;
+            }
+            
+            paginationHTML += `
+                <button class="pagination-btn px-4 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-gray-100 text-gray-700 hover:bg-green-50 hover:text-green-600'}" 
+                        onclick="changePage(${currentPage + 1})"
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Change page
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updateProductDisplay();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Animation feedback
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = 'Added!';
+            button.classList.add('bg-green-500');
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('bg-green-500');
+            }, 1000);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.querySelector('.cart-count');
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            const translations = {
+                ta: {
+                    'Home': 'முகப்பு',
+                    'Products': 'பொருட்கள்',
+                    'About': 'எங்களை பற்றி',
+                    'Contact': 'தொடர்பு',
+                    'Our Products': 'எங்கள் பொருட்கள்',
+                    'Discover our range': 'எங்கள் தரமான தினை வகைகளை கண்டறியுங்கள்',
+                    'Add to Cart': 'கூடையில் சேர்',
+                    'Filter by': 'வடிகட்டு',
+                    'Sort by': 'வரிசைப்படுத்து',
+                    'View': 'காட்சி',
+                    'All Categories': 'அனைத்து வகைகள்',
+                    'Organic Millets': 'ஆர்கானிக் தினைகள்',
+                    'Mixed Blends': 'கலப்பு கலவைகள்',
+                    'Specialty Items': 'சிறப்பு பொருட்கள்',
+                    'Featured': 'சிறப்பம்சங்கள்',
+                    'Price: Low to High': 'விலை: குறைந்தது முதல் அதிகம் வரை',
+                    'Price: High to Low': 'விலை: அதிகம் முதல் குறைந்தது வரை',
+                    'Name: A to Z': 'பெயர்: A முதல் Z வரை'
+                }
+            };
+
+            if (lang === 'ta') {
+                document.querySelectorAll('[data-translate]').forEach(element => {
+                    const key = element.getAttribute('data-translate');
+                    if (translations.ta[key]) {
+                        element.textContent = translations.ta[key];
+                    }
+                });
+            } else {
+                document.querySelectorAll('[data-translate]').forEach(element => {
+                    element.textContent = element.getAttribute('data-translate');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

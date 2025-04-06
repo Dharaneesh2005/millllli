@@ -1,0 +1,33 @@
+# Git files
+.git
+.gitignore
+
+# Node modules (will be installed during build)
+node_modules
+
+# Development files
+.vscode
+.idea
+*.log
+.DS_Store
+
+# Test files
+__tests__
+*.test.ts
+*.spec.ts
+
+# Build artifacts that will be recreated
+dist
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Assets not needed for production
+attached_assets/about.html
+attached_assets/cart.html
+attached_assets/checkout.html
+attached_assets/contact.html
+attached_assets/products.html
